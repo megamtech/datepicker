@@ -29,13 +29,13 @@ import { LocaleService } from './locale.service';
 export class ngxDaterangepicker {
   constructor() {
   }
-  static forRoot(config: LocaleConfig = {}): ModuleWithProviders<ngxDaterangepicker> {
-    return {
-      ngModule: ngxDaterangepicker,
-      providers: [
-        { provide: LOCALE_CONFIG, useValue: config},
-        { provide: LocaleService, useClass: LocaleService, deps: [LOCALE_CONFIG]}
-      ]
-    };
-  }
+  // static forRoot(config: LocaleConfig = {}): ModuleWithProviders {
+  //   return {
+  //     ngModule: ngxDaterangepicker,
+  //     providers: [
+  //       { provide: LOCALE_CONFIG, useValue: config},
+  //       { provide: LocaleService, useClass: LocaleService, deps: [LOCALE_CONFIG]}
+  //     ]
+  //   };
+  // }
 }
