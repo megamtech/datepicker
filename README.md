@@ -1,26 +1,16 @@
-# ngx-daterangepicker-material
+# megamtech-labs/ngx-daterangepicker
 
 > Angular 2+ Date range picker.
 
-[![Build Status](https://travis-ci.org/fetrarij/ngx-daterangepicker-material.svg?branch=master)](https://travis-ci.org/fetrarij/ngx-daterangepicker-material)
-[![npm version](https://badge.fury.io/js/ngx-daterangepicker-material.svg)](https://badge.fury.io/js/ngx-daterangepicker-material)
-[![last commit](https://img.shields.io/github/last-commit/fetrarij/ngx-daterangepicker-material.svg)](https://github.com/fetrarij/ngx-daterangepicker-material/commits/master)
 
-This `Angular Material` plugin is compatible with Angular 2+ and is Ivy compatible. It leverages `moment.js` to handle date manipulation and parsing. The base for this plugin was originally the [Bootstrap Date Range Picker](http://www.daterangepicker.com), but its dependencies on jQuery and Bootstrap were removed. `Angular Material` themes are fully supported since v3.0.0, so you can just drop this component into an existing Material project and it will blend right into your application.
+This `Angular Material` plugin is compatible with Angular 2+ and is Ivy compatible. It leverages `date-fns` to handle date manipulation and parsing. The base for this plugin was originally the [Bootstrap Date Range Picker](http://www.daterangepicker.com), .
 
-![](screen.png)
+![image.png](./image.png)
 
-Demo: https://fetrarij.github.io/ngx-daterangepicker-material/
 
 ---
 
-## Versions
 
-| Angular| ngx-daterangepicker-material|
-| ------|:------:| 
-| >=9.0.0  | v4.x.x |
-| <9.0.0  | v2.x.x |
-| ~~>=9.0.0 depends on @angular/material~~ |~~v3.x~~ |
 
 ---
 
@@ -28,21 +18,24 @@ Demo: https://fetrarij.github.io/ngx-daterangepicker-material/
 
  Install the plugin from npm:
 
- `npm install ngx-daterangepicker-material --save` .
+ `npm i @megamtech-labs/ngx-datepicker --save` .
 
  import **ngxDaterangepicker** in your module:
 
 ````typescript
 ...
 import { FormsModule } from '@angular/forms';
-import { ngxDaterangepicker } from 'ngx-daterangepicker-material';
+import { ngxDaterangepicker } from '@megamtech-labs/ngx-datepicker';
 import { App } from './app';
 
 @NgModule({
     imports: [
         ... ,
         FormsModule,
-        ngxDaterangepicker.forRoot()
+       ngxDaterangepicker.forRoot({
+      applyLabel: 'Okay',
+      firstDay: 3
+    })
     ],
     declarations: [App],
     bootstrap:    [App]
@@ -60,7 +53,7 @@ Html:
 Typescript:
 
 ````typescript
-selected: {startDate: Moment, endDate: Moment};
+selected: {startDate: startOfDay(new Date()), endDate: endOfDay(new Date())};
 ````
 ### with some options:
 Html:
@@ -77,10 +70,9 @@ Html:
 Typescript:
 
 ````typescript
-selected: {start: Moment, end: Moment};
+selected: {startDate: startOfDay(new Date()), endDate: endOfDay(new Date())};
 ````
-You can [play with our online demo here](https://fetrarij.github.io/ngx-daterangepicker-material/)
-and [browse our demo code here](./demo/src/app).
+
 
 ## Inline usage
 
@@ -130,12 +122,9 @@ You can use the component directly in your templates, which will set its `inline
     applyLabel: 'Okay', // detault is 'Apply'
     clearLabel: 'Clear', // detault is 'Clear'
     customRangeLabel: 'Custom range',
-    daysOfWeek: moment.weekdaysMin(),
-    monthNames: moment.monthsShort(),
     firstDay: 1 // first day is monday
 }
 ```
-[Check here](#global-locale) for setting the global locale
 
 ### startKey and endKey
 
@@ -156,15 +145,19 @@ the model we got would be:  `{start: Date, end: Date}`
 ```html
 <input type="text" ngxDaterangepicker startKey="start" endKey="end" [ranges]="ranges" [(ngModel)]="model">
 ```
-```javascript
-ranges: any = {
-    'Today': [moment(), moment()],
-    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-    'This Month': [moment().startOf('month'), moment().endOf('month')],
-    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-  }
+```typescript
+ranges: any = [
+    { label: 'Today', start: startOfDay(new Date()), end: endOfDay(new Date()) },
+    { label: 'Yesterday', start: startOfDay(sub(new Date, { 'days': 1 })),
+     end: endOfDay(sub(new Date, { 'days': 1 })) },
+    { label: 'Last 7 Days', start: startOfDay(sub(new Date, { 'days': 7 })), end: endOfDay(new Date()) },
+    { label: 'Last 30 Days', start: startOfDay(sub(new Date, { 'days': 30 })), end: endOfDay(new Date()) },
+    { label: 'This Month', start: startOfMonth(new Date), end: endOfDay(new Date()) },
+    { label: 'Last Month', start: startOfMonth(sub(new Date, { months: 1 })),
+     end: endOfMonth(sub(new Date, { months: 1 })) },
+    { label: 'Last 3 Month', start: startOfMonth(sub(new Date, { months: 3 })), 
+    end: endOfMonth(sub(new Date, { months: 1 })) }
+]
 ```
 #### Other options with ranges
 
@@ -197,16 +190,7 @@ It is possible to open datepicker from outside. You should create an input with 
     </a>
 ```
 
-```javascript
 
-  ...
-    @ViewChild(DaterangepickerDirective, { static: false }) pickerDirective: DaterangepickerDirective;
-  ...
-  ...
-  openDatepicker() {
-    this.pickerDirective.open();
-  }
-```
 
 ### Timepicker
 
@@ -243,11 +227,11 @@ You can use theses options:
 
 ### \(rangeClicked)
 
- >Fired when clicked on range, and send an object with range label and dates value, eg:  `{label: 'This Month', dates: [Moment, Moment]}`
+ >Fired when clicked on range, and send an object with range label and dates value, eg:  `{label: 'This Month', dates: [Date, Date]}`
 
 ### \(datesUpdated)
 
- >Fires when the date model is updated, like applying (if you have activated the apply button), or when selecting a range or date without the apply button, and sends an object containing start and end dates, eg: `{startDate: Moment, endDate: Moment}`
+ >Fires when the date model is updated, like applying (if you have activated the apply button), or when selecting a range or date without the apply button, and sends an object containing start and end dates, eg: `{startDate: Date, endDate: Date}`
 
 ### Global locale
 
@@ -278,14 +262,14 @@ Install local dependencies: `npm install`.
 
 ### Development server
 
-Run `npm start` to start a development server on a port 4200.
+Run `npm start` to start a development server on a port 4401.
 
-Open `http//:localhost:4200` on your browser.
+Open `http//:localhost:4401` on your browser.
 
 ## Tests
 
 Run `npm test` or `ng test` to run tests.
 
 
-## [License](https://github.com/fetrarij/ngx-daterangepicker-material/blob/master/LICENSE)
+
 MIT
