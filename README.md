@@ -1,18 +1,16 @@
 # megamtech-labs/ngx-daterangepicker
 
-> Angular 2+ Date range picker.
+ Megamtech Daterange picker for angular 6+.
 
 
-This `Angular Material` plugin is compatible with Angular 2+ and is Ivy compatible. It leverages `date-fns` to handle date manipulation and parsing. The base for this plugin was originally the [Bootstrap Date Range Picker](http://www.daterangepicker.com), .
+This `Megamtech Daterange picker` plugin is compatible with Angular 6+ and is Ivy compatible. It leverages `date-fns` to handle date manipulation and parsing. 
 
-![image.png](./image.png)
-
-
----
-
-
+![image-1.png](./image-1.png)
 
 ---
+
+
+
 
 ## Installation
 
