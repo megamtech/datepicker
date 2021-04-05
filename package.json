@@ -1,6 +1,6 @@
 {
   "name": "@megamtech-labs/ngx-datepicker",
-  "version": "1.0.0",
+  "version": "1.0.7",
   "description": "Angular date picker ",
   "keywords": [
     "angular2",
@@ -35,16 +35,17 @@
     "e2e": "ng e2e",
     "ngc": "./node_modules/.bin/ngc -p tsconfig.json",
     "gh-pages": "ng build --prod --base-href=\"/ngx-daterangepicker-material/\" && ngh --dir demo/dist",
-    "build": "ng-packagr -p package.json"
+    "build": "ng-packagr -p package.json",
+    "publish":"npm publish dist/"
   },
   "author": "Megam Technologies.",
   "repository": {
     "type": "git",
-    "url": "http://labs.megamtech.com/megamtech-labs/ngx-datepicker.git",
+    "url": "https://labs.megamtech.com/megamtech-labs/ngx-datepicker.git",
     "directory": "projects/ngx-datepicker/"
   },
   "publishConfig": {
-    "@megamtech-labs:registry": "https://labs.megamtech.com/api/v4/projects/58/packages/npm/"
+    "@megamtech-labs:registry": "https://labs.megamtech.com/api/v4/projects/39/packages/npm/"
   },
   "peerDependencies": {
     "date-fns": "^2.16.1"
@@ -85,7 +86,9 @@
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
     "typescript": "~3.8.3",
-    "zone.js": "~0.10.2"
+    "zone.js": "~0.10.2",
+    "date-fns": "^2.16.1",
+    "tslib": "^1.10.0"
   },
   "$schema": "./node_modules/ng-packagr/package.schema.json",
   "ngPackage": {
@@ -97,10 +100,7 @@
     },
     "dest": "dist"
   },
-  "dependencies": {
-    "date-fns": "^2.16.1",
-    "tslib": "^1.10.0"
-  },
+  "dependencies": {},
   "whitelistedNonPeerDependencies": [
     "."
   ]
