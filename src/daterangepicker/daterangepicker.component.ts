@@ -1,6 +1,6 @@
 import {
     ChangeDetectorRef, Component, ElementRef, EventEmitter,
-    forwardRef, Input, OnInit, Output, ViewChild, ViewEncapsulation
+    forwardRef, Input, OnInit, Output, ViewChild, ViewEncapsulation, HostListener, OnChanges, SimpleChanges
 } from '@angular/core';
 import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {
@@ -39,7 +39,7 @@ export enum SideEnum {
         multi: true
     }]
 })
-export class DaterangepickerComponent implements OnInit {
+export class DaterangepickerComponent implements OnInit, OnChanges {
     private _old: { start: any, end: any } = { start: null, end: null };
     chosenLabel: string;
     calendarVariables: { left: any, right: any } = { left: {}, right: {} };
@@ -167,9 +167,20 @@ export class DaterangepickerComponent implements OnInit {
         this.startDateChanged = new EventEmitter();
         this.endDateChanged = new EventEmitter();
     }
-
+    /**
+   * handle click on all element in the component, useful for outside of click
+   * @param e event
+   */
+    @HostListener('click', ['$event'])
+    handleInternalClick(e: MouseEvent): void {
+        return e.stopPropagation();
+    }
+    ngOnChanges(changes: SimpleChanges): void {
+        if ((changes.startDate || changes.endDate) && this.inline) {
+            this.updateView();
+        }
+    }
     ngOnInit() {
-        console.log('TESTTTTTT');
         this._buildLocale();
         const daysOfWeek = [...this.locale.daysOfWeek];
         // ** need to fix this.locale.firstDay*/
@@ -682,7 +693,6 @@ export class DaterangepickerComponent implements OnInit {
      * this should calculate the label
      */
     calculateChosenLabel() {
-        console.log('TEST');
         if (!this.locale || !this.locale.separator) {
             this._buildLocale();
         }
@@ -1026,8 +1036,6 @@ export class DaterangepickerComponent implements OnInit {
      */
     clickRange(e, label) {
         this.chosenRange = label.label;
-        console.log('label===>', label);
-        console.log('this.locale.customRangeLabel===>', this.locale.customRangeLabel);
         if (label.label === this.locale.customRangeLabel) {
             this.isShown = true; // show calendars
             this.showCalInRanges = true;
@@ -1128,13 +1136,7 @@ export class DaterangepickerComponent implements OnInit {
 
     }
 
-    /**
-     * handle click on all element in the component, useful for outside of click
-     * @param e event
-     */
-    handleInternalClick(e) {
-        e.stopPropagation();
-    }
+
     /**
      * update the locale options
      * @param locale
